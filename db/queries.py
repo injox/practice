@@ -17,11 +17,11 @@ table_map = {
 
 class ORM:
     @staticmethod
-    def create_tables():
+    def create_tables():  # создание таблиц из моделей
         Base.metadata.create_all(engine)
 
     @staticmethod
-    def add_record(table_name, **kwargs):
+    def add_record(table_name, **kwargs):  # добавление записи в таблицу
         if table_name not in table_map:
             raise ValueError(f"Неверное имя таблицы: {table_name}")
 
@@ -50,7 +50,7 @@ class ORM:
             raise ValueError(f"Неожиданная ошибка: {str(e)}")
 
     @staticmethod
-    def update_data(table_name, column, row_id, new_value):
+    def update_data(table_name, column, row_id, new_value):  # обновление данных в таблице
         if table_name not in table_map:
             raise ValueError(f"Неверное имя таблицы: {table_name}")
 
@@ -85,7 +85,7 @@ class ORM:
             session.close()
 
     @staticmethod
-    def search_database(table_name, search_term):
+    def search_database(table_name, search_term):  # поиск данных в таблице
         if table_name not in table_map:
             raise ValueError(f"Неверное имя таблицы: {table_name}")
 
@@ -106,7 +106,7 @@ class ORM:
             readable_results = []
             for result in results:
                 result_str = " | ".join(
-                    [f"{column.name}: {getattr(result, column.name)}" for column in model.__table__.columns])
+                    [f"{getattr(result, column.name)}" for column in model.__table__.columns])
                 readable_results.append(result_str)
 
             return readable_results
@@ -116,7 +116,7 @@ class ORM:
             session.close()
 
     @staticmethod
-    def export_database_to_xml(output_directory, selected_table):
+    def export_database_to_xml(output_directory, selected_table):  # экспорт данных в XML
         inspector = inspect(engine)
         try:
             os.makedirs(output_directory, exist_ok=True)
@@ -149,7 +149,7 @@ class ORM:
             session.close()
 
     @staticmethod
-    def display_data(table_name):
+    def display_data(table_name):  # отображение данных из таблицы
         if table_name not in table_map:
             return f"Неверное имя таблицы: {table_name}"
 
@@ -182,7 +182,7 @@ class ORM:
         return f"\nДанные таблицы {table_name}:\n{table_str}"
 
     @staticmethod
-    def delete_record(table_name, record_id):
+    def delete_record(table_name, record_id):  # удаление записи из таблицы
         if table_name not in table_map:
             return f"Неверное имя таблицы: {table_name}"
 

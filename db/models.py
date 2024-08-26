@@ -12,7 +12,7 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 
-class Teachers(Base):
+class Teachers(Base):  # таблица преподавателей
     __tablename__ = "teachers"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     teacher_code: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -24,7 +24,7 @@ class Teachers(Base):
     experience: Mapped[int] = mapped_column(Integer)
 
 
-class Subjects(Base):
+class Subjects(Base):  # таблица предметов
     __tablename__ = "subjects"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     subject_code: Mapped[int] = mapped_column(Integer, nullable=False, unique=True)
@@ -32,7 +32,7 @@ class Subjects(Base):
     hours: Mapped[int] = mapped_column(Integer, nullable=False)
 
 
-class Schedule(Base):
+class Schedule(Base): # таблица разгрузки
     __tablename__ = "schedule"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     teacher_code: Mapped[int] = mapped_column(Integer, ForeignKey("teachers.teacher_code"), nullable=False)

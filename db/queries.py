@@ -106,7 +106,7 @@ class ORM:
             readable_results = []
             for result in results:
                 result_str = " | ".join(
-                    [f"{column.name}: {getattr(result, column.name)}" for column in model.__table__.columns])
+                    [f"{getattr(result, column.name)}" for column in model.__table__.columns])
                 readable_results.append(result_str)
 
             return readable_results

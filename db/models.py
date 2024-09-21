@@ -3,6 +3,7 @@ from sqlalchemy.orm import sessionmaker, Mapped, mapped_column, DeclarativeBase
 
 engine = create_engine("sqlite:///database.db")
 
+
 class Base(DeclarativeBase):
     pass
 
@@ -38,3 +39,32 @@ class Schedule(Base): # таблица разгрузки
     teacher_code: Mapped[int] = mapped_column(Integer, ForeignKey("teachers.teacher_code"), nullable=False)
     subject_code: Mapped[int] = mapped_column(Integer, ForeignKey("subjects.subject_code"), nullable=False)
     group_name: Mapped[str] = mapped_column(String(30), nullable=False)
+
+
+table_display_names = {
+    "teachers": "Преподаватели",
+    "subjects": "Предметы",
+    "schedule": "Нагрузка"
+}
+
+teacher_column_names = {
+    "teacher_code": "Код учителя",
+    "name": "Имя",
+    "surname": "Фамилия",
+    "middle_name": "Отчество",
+    "degree": "Учёная степень",
+    "work_position": "Должность",
+    "experience": "Стаж"
+}
+
+subject_column_names = {
+    "subject_code": "Код предмета",
+    "subject": "Название",
+    "hours": "Количество часов"
+}
+
+schedule_column_names = {
+    "teacher_code": "Преподаватель",
+    "subject_code": "Предмет",
+    "group_name": "Группа"
+}

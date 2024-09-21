@@ -85,9 +85,9 @@ class ORM:
             session.close()
 
     @staticmethod
-    def search_database(table_name, search_term):  # поиск данных в таблице
+    def search_database(table_name, search_term):
         if table_name not in table_map:
-            raise ValueError(f"Неверное имя таблицы: {table_name}")
+            raise ValueError(f"Неверное имя таблицы")
 
         model = table_map[table_name]
 
@@ -105,16 +105,14 @@ class ORM:
 
             readable_results = []
             for result in results:
-                result_str = " | ".join(
-                    [f"{getattr(result, column.name)}" for column in model.__table__.columns])
-                readable_results.append(result_str)
+                result_dict = {column.name: getattr(result, column.name) for column in model.__table__.columns}
+                readable_results.append(result_dict)
 
             return readable_results
         except Exception as e:
             raise ValueError(f"Произошла ошибка во время поиска: {str(e)}")
         finally:
             session.close()
-
     @staticmethod
     def export_database_to_xml(output_directory, selected_table):  # экспорт данных в XML
         inspector = inspect(engine)
@@ -149,42 +147,41 @@ class ORM:
             session.close()
 
     @staticmethod
-    def display_data(table_name):  # отображение данных из таблицы
+    def display_data(table_name):
         if table_name not in table_map:
-            return f"Неверное имя таблицы: {table_name}"
+            return [{"Error": f"Неверное имя таблицы."}]
 
         table_class = table_map[table_name]
 
         if table_name == 'schedule':
             records = session.query(Schedule, Teachers, Subjects).join(Teachers).join(Subjects).all()
             if not records:
-                return "Нет данных в таблице schedule"
+                return [{"Info": "Нет данных в таблице"}]
 
-            header = ["ID", "Учитель", "Предмет", "Группа"]
-            rows = [[schedule.id, f"{teacher.surname} {teacher.name}", subject.subject, schedule.group_name]
-                    for schedule, teacher, subject in records]
+            return [
+                {
+                    "ID": schedule.id,
+                    "Учитель": f"{teacher.surname} {teacher.name}",
+                    "Предмет": subject.subject,
+                    "Группа": schedule.group_name
+                }
+                for schedule, teacher, subject in records
+            ]
         else:
             records = session.query(table_class).all()
             if not records:
-                return f"Нет данных в таблице {table_name}"
+                return [{"Info": f"Нет данных в таблице"}]
 
-            header = [column.name for column in table_class.__table__.columns]
-            rows = [[getattr(record, column.name) for column in table_class.__table__.columns]
-                    for record in records]
-
-        col_widths = [max(len(str(row[i])) for row in [header] + rows) for i in range(len(header))]
-
-        table_str = " | ".join(f"{h:<{w}}" for h, w in zip(header, col_widths)) + "\n"
-        table_str += "-" * (sum(col_widths) + 3 * (len(col_widths) - 1)) + "\n"
-        for row in rows:
-            table_str += " | ".join(f"{str(cell):<{w}}" for cell, w in zip(row, col_widths)) + "\n"
-
-        return f"\nДанные таблицы {table_name}:\n{table_str}"
+            columns = [column.name for column in table_class.__table__.columns]
+            return [
+                {column: getattr(record, column) for column in columns}
+                for record in records
+            ]
 
     @staticmethod
     def delete_record(table_name, record_id):  # удаление записи из таблицы
         if table_name not in table_map:
-            return f"Неверное имя таблицы: {table_name}"
+            return f"Неверное имя таблицы"
 
         table_class = table_map[table_name]
         try:
@@ -193,9 +190,9 @@ class ORM:
             if record:
                 session.delete(record)
                 session.commit()
-                return f"Запись с ID {record_id} успешно удалена из таблицы {table_name}"
+                return f"Запись с ID {record_id} успешно удалена из таблицы"
             else:
-                return f"Запись с ID {record_id} не найдена в таблице {table_name}"
+                return f"Запись с ID {record_id} не найдена в таблице"
         except Exception as e:
             session.rollback()
             return f"Произошла ошибка при удалении записи: {str(e)}"

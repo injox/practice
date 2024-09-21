@@ -9,3 +9,28 @@
 # search_tab - поиск данных в бд
 # update_tab - обновление данных в бд
 
+def __init__(self, notebook):
+    super().__init__(notebook)
+    self.teacher_column_names = {
+        "id": "ID",
+        "teacher_code": "Код учителя",
+        "name": "Имя",
+        "surname": "Фамилия",
+        "middle_name": "Отчество",
+        "degree": "Учёная степень",
+        "work_position": "Должность",
+        "experience": "Опыт работы(в годах)"
+    }
+    self.subject_column_names = {
+        "id": "ID",
+        "subject_code": "Код предмета",
+        "subject": "Название",
+        "hours": "Количество часов"
+    }
+    self.schedule_column_names = {
+        "id": "ID",
+        "teacher_code": "Преподаватель",
+        "subject_code": "Предмет",
+        "group_name": "Группа"
+    }
+

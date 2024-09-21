@@ -2,6 +2,7 @@ from gui.base_tab import BaseTab
 import tkinter as tk
 from tkinter import ttk, messagebox
 from db.queries import ORM
+from db.models import table_display_names
 
 
 class DeleteTab(BaseTab):
@@ -11,7 +12,7 @@ class DeleteTab(BaseTab):
 
         ttk.Label(delete_frame, text="Таблица:").grid(row=0, column=0, padx=5, pady=5)
         self.delete_table_var = tk.StringVar()
-        (ttk.Combobox(delete_frame, textvariable=self.delete_table_var, values=["teachers", "subjects", "schedule"])
+        (ttk.Combobox(delete_frame, textvariable=self.delete_table_var, values=list(table_display_names.values()))
          .grid(row=0, column=1, padx=5, pady=5))
 
         ttk.Label(delete_frame, text="ID записи:").grid(row=1, column=0, padx=5, pady=5)
@@ -22,7 +23,8 @@ class DeleteTab(BaseTab):
                                                                                   pady=10)
 
     def delete_record(self):  # удаление записи из бд
-        table_name = self.delete_table_var.get()
+        table_display = self.delete_table_var.get()
+        table_name = next(key for key, value in table_display_names.items() if value == table_display)
         record_id = self.delete_id_entry.get()
 
         try:

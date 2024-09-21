@@ -36,7 +36,8 @@ class ReadTab(BaseTab):
         for i in self.tree.get_children():
             self.tree.delete(i)
 
-        columns = ['id', 'subject_code', 'subject', 'hours']
+        first_record = tree_root.find('record')
+        columns = [elem.tag for elem in first_record]
         self.tree["columns"] = columns
         self.tree["show"] = "headings"
 
@@ -45,7 +46,7 @@ class ReadTab(BaseTab):
             self.tree.column(col, anchor="center", width=120)
 
         for record in tree_root.findall('record'):
-            values = [record.find(col).text for col in columns]
+            values = [record.find(col).text if record.find(col) is not None else "" for col in columns]
             self.tree.insert("", "end", values=values)
 
     def get_tab_name(self):
